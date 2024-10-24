@@ -31,10 +31,10 @@ const App = () => {
           <Route path="/inactiveuser" element={<InactiveUser />} />
 
           {/* for admin routes */}
-          <Route path="/adminHome/*" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminHome /></ProtectedRoute>}>
-            <Route path="dashboard" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminDashboard /></ProtectedRoute>} />
+          <Route path="/adminHome" element={<ProtectedRoute allowedRoles={['ADMIN','ADMIN_DASHBOARD' ,'ADMIN_LEADS', 'ADMIN_USERS', 'ADMIN_A1', 'MANAGER']}><AdminHome /></ProtectedRoute>}>
+            <Route path="dashboard" element={<ProtectedRoute allowedRoles={['ADMIN','ADMIN_DASHBOARD']}><AdminDashboard /></ProtectedRoute>} />
             <Route path="user" element={<ProtectedRoute allowedRoles={['ADMIN_A1', 'ADMIN']}><UserDashboard /></ProtectedRoute>} />
-            <Route path="createLeads" element={<ProtectedRoute allowedRoles={['ADMIN_LEADS', 'ADMIN']}><CreateLeads /></ProtectedRoute>} />
+            <Route path="createLeads" element={<ProtectedRoute allowedRoles={['ADMIN_LEADS', 'ADMIN', 'MANAGER']}><CreateLeads /></ProtectedRoute>} />
             <Route path="allUsers" element={<ProtectedRoute allowedRoles={['ADMIN_USERS', 'ADMIN']}><AllUsers /></ProtectedRoute>} />
           </Route>
 

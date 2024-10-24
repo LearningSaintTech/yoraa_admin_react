@@ -45,7 +45,13 @@ export function getAllUsers() {
     });
 }
 
-
+export function getAllRoles() {
+    console.log("getAllRoles");
+    return request({
+        url: API_BASE_URL + "/admin/getAllRoles",
+        method: 'GET'
+    });
+}
 
 export function updateUserRoleAndStatus(userId, newRoles, newStatus) {
     const body = {};
