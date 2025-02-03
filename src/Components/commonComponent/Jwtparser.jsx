@@ -1,9 +1,7 @@
 const parseJwt = (token) => {
-    // Check if token is present
     if (!token) return null;
   
     try {
-      // Extract the second part of the token (payload)
       const base64Url = token.split('.')[1];
   
       // Replace characters for proper base64 decoding

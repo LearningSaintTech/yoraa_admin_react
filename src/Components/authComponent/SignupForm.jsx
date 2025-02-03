@@ -23,17 +23,17 @@ const SignupForm = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-
+    
         signup(formData)
             .then(response => {
-                console.log("You're successfully registered. Please login to continue!");
-                navigate('/login'); // Redirect to login page
+                console.log("You're successfully registered. Please verify your email!");
+                navigate('/otp-verification', { state: { email: formData.email } }); // Redirect to OTP verification with email
             })
             .catch(error => {
                 console.log((error && error.message) || 'Oops! Something went wrong. Please try again!');
             });
     };
-
+    
     return (
         <div className="signup-container">
             <div className="signup-content">

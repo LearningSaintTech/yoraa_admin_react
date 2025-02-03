@@ -8,65 +8,45 @@ const Sidebar = () => {
   const [showLeads, setShowLeads] = useState(false);
   const [showDashboard, setShowDashboard] = useState(false);
 
-  const toggleUsers = () => {
-    setShowUsers(!showUsers);
-  };
-
-  const toggleLeads = () => {
-    setShowLeads(!showLeads);
-  };
-
-  const toggleDashboard = () => {
-    setShowDashboard(!showDashboard);
-  };
-
-  const user = useSelector(state => state.auth.user);
-  const userRoles = user.roles.map(role => role.name);
-  console.log("user", user);
+  const toggleUsers = () => setShowUsers(!showUsers);
+  const toggleLeads = () => setShowLeads(!showLeads);
+  const toggleDashboard = () => setShowDashboard(!showDashboard);
 
   return (
     <div className="sidebar">
       <ul className="sidebar-menu">
-        {userRoles.includes('ADMIN_DASHBOARD') || userRoles.includes('ADMIN') ? (
-          <li className="sidebar-item">
-            <div onClick={toggleDashboard} className="sidebar-link">
-              DASHBOARD
-            </div>
-            {showDashboard && (
-              <ul className="submenu active">
-                <li><Link to="/adminHome/dashboard" className="sidebar-link">Dashboard</Link></li>
-              </ul>
-            )}
-          </li>
-        ) : null}
+        <li className="sidebar-item">
+          <div onClick={toggleDashboard} className="sidebar-link">
+            DASHBOARD
+          </div>
+          {showDashboard && (
+            <ul className="submenu active">
+              <li><Link to="/adminHome/dashboard" className="sidebar-link">Dashboard</Link></li>
+            </ul>
+          )}
+        </li>
 
-        {userRoles.includes('ADMIN_A1') || userRoles.includes('ADMIN') ? (
-          <li className="sidebar-item">
-            <div onClick={toggleUsers} className="sidebar-link">
-              User Management
-            </div>
-            {showUsers && (
-              <ul className="submenu active">
-                <li><Link to="/adminHome/allUsers" className="sidebar-link">All Users</Link></li>
-                {/* Add more user management links here */}
-              </ul>
-            )}
-          </li>
-        ) : null}
+        <li className="sidebar-item">
+          <div onClick={toggleUsers} className="sidebar-link">
+            User Management
+          </div>
+          {showUsers && (
+            <ul className="submenu active">
+              <li><Link to="/adminHome/allUsers" className="sidebar-link">All Users</Link></li>
+            </ul>
+          )}
+        </li>
 
-        {userRoles.includes('ADMIN_LEADS') || userRoles.includes('ADMIN') || userRoles.includes('MANAGER') ? (
-          <li className="sidebar-item">
-            <div onClick={toggleLeads} className="sidebar-link">
-              Lead Management
-            </div>
-            {showLeads && (
-              <ul className="submenu active">
-                <li><Link to="/adminHome/createLeads" className="sidebar-link">Create Lead</Link></li>
-                {/* Add more lead management links here */}
-              </ul>
-            )}
-          </li>
-        ) : null}
+        <li className="sidebar-item">
+          <div onClick={toggleLeads} className="sidebar-link">
+            Lead Management
+          </div>
+          {showLeads && (
+            <ul className="submenu active">
+              <li><Link to="/adminHome/createLeads" className="sidebar-link">Create Lead</Link></li>
+            </ul>
+          )}
+        </li>
       </ul>
     </div>
   );

@@ -4,9 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { login, getCurrentUser } from "../commonComponent/Api";
 import { ACCESS_TOKEN, USER_DATA } from '../commonComponent/Constant';
 import { setToken, setUser } from '../slice/authslice';
-import { GOOGLE_AUTH_URL, FACEBOOK_AUTH_URL, GITHUB_AUTH_URL } from "../commonComponent/Constant";
 import '../../css/authcomponent/LoginForm.css';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 const LoginForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -16,20 +15,23 @@ const LoginForm = () => {
   const onSubmit = async (data) => {
     try {
       const response = await login(data);
-      localStorage.setItem(ACCESS_TOKEN, response.accessToken);
+      console.log("response",response.data.token)
+      localStorage.setItem(ACCESS_TOKEN, response.data.token);
 
       dispatch(setToken(response.accessToken));
 
       const userData = await getCurrentUser(response.accessToken);
-      localStorage.setItem(USER_DATA, userData);
+      localStorage.setItem(USER_DATA, JSON.stringify(userData));
 
       dispatch(setUser(userData));
 
-      if (userData.roles.some(role => role.name === 'ADMIN')) {
+      if (userData.isAdmin){
         navigate('/adminHome');
-      } else if (userData.roles.some(role => role.name === 'USER')) {
-        navigate('/user');
-      } else {
+      } 
+      // else if (userData.roles.some(role => role.name === 'USER')) {
+      //   navigate('/user');
+      // }
+       else {
         navigate('/login');
       }
     } catch (error) {
@@ -40,19 +42,20 @@ const LoginForm = () => {
   return (
     <div className="login-container">
       <h2 className="login-heading">Login</h2>
-      <div className="social-login">
-        <a href={GOOGLE_AUTH_URL}>Log in with Google</a>
-        <a href={FACEBOOK_AUTH_URL}>Log in with Facebook</a>
-        <a href={GITHUB_AUTH_URL}>Log in with Github</a>
-      </div>
       <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
         <div>
-          <label>Email</label>
+          <label>Phone Number</label>
           <input
-            type="email"
-            {...register('email', { required: 'Email is required' })}
+            type="text"
+            {...register('phNo', { 
+              required: 'Phone number is required', 
+              pattern: {
+                value: /^[0-9]{10}$/,
+                message: 'Enter a valid 10-digit phone number'
+              }
+            })}
           />
-          {errors.email && <p className="error-message">{errors.email.message}</p>}
+          {errors.phNo && <p className="error-message">{errors.phNo.message}</p>}
         </div>
         <div>
           <label>Password</label>
@@ -65,8 +68,6 @@ const LoginForm = () => {
         <button type="submit">Login</button>
       </form>
       <p>Don't have an account? <button onClick={() => navigate('/signup')}>Sign up!</button></p>
-
-      {/* Render SignupForm component */}
     </div>
   );
 };

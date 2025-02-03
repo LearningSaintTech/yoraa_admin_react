@@ -10,14 +10,15 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
         return <Navigate to="/login" />;
     }
 
-    if (user.status !== 'active') {
-        return <Navigate to="/inactiveuser" />;
-    }
+    // if (user.status !== 'active') {
+    //     return <Navigate to="/inactiveuser" />;
+    // }
 
-    const userRoles = user.roles.map(role => role.name);
-    if (!allowedRoles.some(role => userRoles.includes(role))) {
+    // const userRoles = user.roles.map(role => role.name);
+    if (!user.isAdmin) {
         return <Navigate to="/notAccess" />;
     }
+    
 
     return children;
 };
