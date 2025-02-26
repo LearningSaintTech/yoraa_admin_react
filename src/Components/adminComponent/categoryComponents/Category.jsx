@@ -46,8 +46,11 @@ const Category = () => {
         try {
             let response;
             if (editingCategory) {
+                console.log("updateCategory")
                 response = await updateCategory(editingCategory._id, data);
             } else {
+                console.log("createCategory")
+
                 response = await createCategory(data);
             }
             if (response.success) {

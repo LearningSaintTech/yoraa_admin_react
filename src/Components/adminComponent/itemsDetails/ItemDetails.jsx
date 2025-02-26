@@ -271,7 +271,7 @@ const ItemsDetails = () => {
       }
       if (isUpdateMode) formDataToSend.append("deletedImages", JSON.stringify(formData.deletedImages));
 
-      console.log("selectedItemDetails", selectedItemDetails.items._id);
+      console.log("selectedItemDetails", selectedItemDetails);
       const apiCall = isUpdateMode
         ? updateItemDetails(selectedItemDetails.items._id, itemDetailsData, { images: formData.images })
         : createItemDetails(selectedItemId, formDataToSend);

@@ -100,31 +100,32 @@ const Items = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const data = new FormData();
-    data.append("name", formData.name);
-    data.append("description", formData.description);
-    data.append("price", formData.price);
-    data.append("stock", formData.stock);
-    data.append("brand", formData.brand);
-    data.append("style", formData.style);
-    data.append("occasion", formData.occasion);
-    data.append("fit", formData.fit);
-    data.append("material", formData.material);
-    data.append("discountPrice", formData.discountPrice);
-    data.append("averageRating", formData.averageRating);
-    data.append("totalReviews", formData.totalReviews);
-    if (formData.image) {
-      data.append("image", formData.image);
-    }
-    data.append("categoryId", category);
-    data.append("subCategoryId", subcategory);
+    // const data = new FormData();
+    // data.append("name", formData.name);
+    // data.append("description", formData.description);
+    // data.append("price", formData.price);
+    // data.append("stock", formData.stock);
+    // data.append("brand", formData.brand);
+    // data.append("style", formData.style);
+    // data.append("occasion", formData.occasion);
+    // data.append("fit", formData.fit);
+    // data.append("material", formData.material);
+    // data.append("discountPrice", formData.discountPrice);
+    // data.append("averageRating", formData.averageRating);
+    // data.append("totalReviews", formData.totalReviews);
+    // if (formData.image) {
+    //   data.append("image", formData.image);
+    // }
+    // data.append("categoryId", category);
+    // data.append("subCategoryId", subcategory);
 
     try {
       if (editingItem) {
-        await updateItem(editingItem._id, data);
+        console.log("editingItem",editingItem._id)
+        await updateItem(editingItem._id, formData,category,subcategory);
       } else {
-        console.log("formDataToSend", data);
-        await createItem(data);
+        console.log("formDataToSend", formData);
+        await createItem(formData,category,subcategory);
       }
       resetForm();
       fetchItems(); // Refresh items without reload

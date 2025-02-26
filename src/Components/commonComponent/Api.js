@@ -57,19 +57,20 @@ export function getCategoryById(categoryId) {
 }
 
 export async function createCategory(categoryData) {
-    const formData = new FormData();
-    console.log("categoryData.name", categoryData);
-    formData.append("name", categoryData.name);
-    formData.append("description", categoryData.description);
+    console.log("createCategory",categoryData)
+    // const formData = new FormData();
+    // console.log("categoryData.name", categoryData);
+    // formData.append("name", categoryData.name);
+    // formData.append("description", categoryData.description);
     
-    if (categoryData.image) {
-        formData.append("image", categoryData.image);
-    }
+    // if (categoryData.image) {
+    //     formData.append("image", categoryData.image);
+    // }
 
     try {
         const response = await fetch(`${API_BASE_URL}/api/categories`, {
             method: "POST",
-            body: formData,
+            body: categoryData,
             headers: {
                 Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
             },
@@ -88,15 +89,15 @@ export async function createCategory(categoryData) {
 }
 
 export function updateCategory(categoryId, categoryData) {
-    const formData = new FormData();
-    formData.append("name", categoryData.name);
-    formData.append("description", categoryData.description);
-    if (categoryData.image) formData.append("image", categoryData.image);
+    // const formData = new FormData();
+    // formData.append("name", categoryData.name);
+    // formData.append("description", categoryData.description);
+    // if (categoryData.image) formData.append("image", categoryData.image);
   
     return request({
       url: API_BASE_URL + `/api/categories/${categoryId}`,
       method: "PUT",
-      body: formData,
+      body: categoryData,
       headers: {
         Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
       },
@@ -130,19 +131,19 @@ export function getSubCategoryById(subCategoryId) {
 }
 
 export async function createSubCategory(subCategoryData) {
-    const formData = new FormData();
-    formData.append("name", subCategoryData.name);
-    formData.append("description", subCategoryData.description);
-    formData.append("categoryId", subCategoryData.categoryId);
+    // const formData = new FormData();
+    // formData.append("name", subCategoryData.name);
+    // formData.append("description", subCategoryData.description);
+    // formData.append("categoryId", subCategoryData.categoryId);
     
-    if (subCategoryData.image) {
-        formData.append("image", subCategoryData.image);
-    }
+    // if (subCategoryData.image) {
+    //     formData.append("image", subCategoryData.image);
+    // }
 
     try {
         const response = await fetch(`${API_BASE_URL}/api/subcategories`, {
             method: "POST",
-            body: formData,
+            body: subCategoryData,
             headers: {
                 Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
             },
@@ -161,19 +162,19 @@ export async function createSubCategory(subCategoryData) {
 }
 
 export function updateSubCategory(subCategoryId, subCategoryData) {
-    const formData = new FormData();
-    formData.append("name", subCategoryData.name);
-    formData.append("description", subCategoryData.description);
-    formData.append("categoryId", subCategoryData.categoryId);
+    // const formData = new FormData();
+    // formData.append("name", subCategoryData.name);
+    // formData.append("description", subCategoryData.description);
+    // formData.append("categoryId", subCategoryData.categoryId);
     
-    if (subCategoryData.image) {
-        formData.append("image", subCategoryData.image);
-    }
+    // if (subCategoryData.image) {
+    //     formData.append("image", subCategoryData.image);
+    // }
 
     return request({
         url: API_BASE_URL + `/api/subcategories/${subCategoryId}`,
         method: "PUT",
-        body: formData,
+        body: subCategoryData,
         headers: {
             Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
         },
@@ -206,7 +207,7 @@ export function getItemById(itemId) {
     });
 }
 
-export async function createItem(itemData) {
+export async function createItem(itemData,category,subcategory) {
     console.log("itemdata",itemData)
     const itemData1 = {
             name: itemData.name,
@@ -226,8 +227,8 @@ export async function createItem(itemData) {
 
     const formData = new FormData();
     
-    formData.append("categoryId", itemData.categoryId);
-    formData.append("subCategoryId", itemData.subCategoryId);
+    formData.append("categoryId", category);
+    formData.append("subCategoryId", subcategory);
     formData.append("data", JSON.stringify(itemData1));
     console.log("fomr data",formData)
 
@@ -256,13 +257,15 @@ console.log("formdata in api.js",formData)
     }
 }
 
-export function updateItem(itemId, itemData) {
+export function updateItem(itemId, itemData,category,subcategory) {
     const formData = new FormData();
     formData.append("name", itemData.name);
     formData.append("description", itemData.description);
     formData.append("price", itemData.price);
-    formData.append("categoryId", itemData.categoryId);
-    formData.append("subCategoryId", itemData.subCategoryId);
+    formData.append("categoryId", category);
+    formData.append("stock", itemData.stock);
+
+    formData.append("subCategoryId", subcategory);
     
     if (itemData.image) {
         formData.append("image", itemData.image);
