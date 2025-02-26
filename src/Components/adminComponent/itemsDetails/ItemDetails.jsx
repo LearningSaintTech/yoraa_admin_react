@@ -217,7 +217,7 @@ const ItemsDetails = () => {
     try {
       console.log("Deleting image from backend:", url);
       const response = await fetch(
-        `http://localhost:8080/api/itemDetails/item-details/${selectedItemDetails.items._id}/delete-image`,
+        `https://api.yoraa.in/api/itemDetails/item-details/${selectedItemDetails.items._id}/delete-image`,
         {
           method: "POST",
           headers: {

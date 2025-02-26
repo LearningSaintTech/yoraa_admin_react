@@ -29,7 +29,7 @@ const AdminDashboard = () => {
       }
 
       // Call your backend to create an order
-      const orderResponse = await fetch('http://localhost:8080/api/razorpay/create-order', {
+      const orderResponse = await fetch('https://api.yoraa.in/api/razorpay/create-order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ const AdminDashboard = () => {
           const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = response;
 
           // Send payment details to your backend for verification
-          fetch('http://localhost:8080//api/razorpay/verify-payment', {
+          fetch('https://api.yoraa.in/api/razorpay/verify-payment', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
