@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
     const user = useSelector(state => state.auth.user);
+    console.log("qqqqqqqq",user.isAdmin)
 
     if (!user) {
         return <Navigate to="/login" />;
@@ -16,6 +17,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 
     // const userRoles = user.roles.map(role => role.name);
     if (!user.isAdmin) {
+        console.log("qqqqqqqq",user.isAdmin)
         return <Navigate to="/notAccess" />;
     }
     

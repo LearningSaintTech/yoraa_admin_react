@@ -1,16 +1,19 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
-import Sidebar from '../sidebar/AdminSidebar';
-import '../../../css/admin/sidebar/AdminSideBar.css';
-import '../../../css/admin/AdminHome.css';
+import React from "react";
+import { Outlet } from "react-router-dom";
+import Sidebar from "../sidebar/AdminSidebar";
 
 const AdminHome = () => {
   return (
-    <div className="admin-container">
-      <Sidebar />
-      <div className="admin-content">
+    <div className="flex">
+      {/* Sidebar */}
+      <aside className="w-64 h-screen bg-gray-800 text-white fixed top-16 left-0">
+        <Sidebar />
+      </aside>
+
+      {/* Main Content Area */}
+      <main className="flex-1 ml-64 pt-20 p-6 bg-gray-100 min-h-screen">
         <Outlet />
-      </div>
+      </main>
     </div>
   );
 };

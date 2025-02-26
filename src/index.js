@@ -16,9 +16,10 @@ root.render(
       <BrowserRouter>
         <PersistGate loading={null} persistor={persistor}>
           <App />
+          <Toaster /> {/* Move Toaster inside PersistGate */}
         </PersistGate>
-        <Toaster />
       </BrowserRouter>
     </Provider>
   </React.StrictMode>
 );
+

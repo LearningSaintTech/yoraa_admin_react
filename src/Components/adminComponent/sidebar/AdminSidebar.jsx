@@ -1,54 +1,46 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import '../../../css/admin/sidebar/AdminSideBar.css';
+import React from "react";
+import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
-  const [showUsers, setShowUsers] = useState(false);
-  const [showLeads, setShowLeads] = useState(false);
-  const [showDashboard, setShowDashboard] = useState(false);
-
-  const toggleUsers = () => setShowUsers(!showUsers);
-  const toggleLeads = () => setShowLeads(!showLeads);
-  const toggleDashboard = () => setShowDashboard(!showDashboard);
-
   return (
-    <div className="sidebar">
-      <ul className="sidebar-menu">
-        <li className="sidebar-item">
-          <div onClick={toggleDashboard} className="sidebar-link">
-            DASHBOARD
-          </div>
-          {showDashboard && (
-            <ul className="submenu active">
-              <li><Link to="/adminHome/dashboard" className="sidebar-link">Dashboard</Link></li>
-            </ul>
-          )}
-        </li>
+    <aside className="w-64 h-screen bg-gray-50 border-r border-gray-200 shadow-sm">
+      {/* Header */}
+      <div className="px-6 py-4 border-b border-gray-200">
+        <h1 className="text-xl font-semibold text-gray-900 tracking-tight">
+ADMIN PANNEL        </h1>
+      </div>
 
-        <li className="sidebar-item">
-          <div onClick={toggleUsers} className="sidebar-link">
-            User Management
-          </div>
-          {showUsers && (
-            <ul className="submenu active">
-              <li><Link to="/adminHome/allUsers" className="sidebar-link">All Users</Link></li>
-            </ul>
-          )}
-        </li>
-
-        <li className="sidebar-item">
-          <div onClick={toggleLeads} className="sidebar-link">
-            Lead Management
-          </div>
-          {showLeads && (
-            <ul className="submenu active">
-              <li><Link to="/adminHome/createLeads" className="sidebar-link">Create Lead</Link></li>
-            </ul>
-          )}
-        </li>
-      </ul>
-    </div>
+      {/* Navigation */}
+      <nav className="mt-4 px-3">
+        <ul className="space-y-1">
+          {[
+            { path: "/adminHome/dashboard", label: "Dashboard" },
+            { path: "/adminHome/category", label: "Category" },
+            { path: "/adminHome/subcategory", label: "Subcategory" },
+            { path: "/adminHome/items", label: "Items" },
+            { path: "/adminHome/itemDetails", label: "Item Details" },
+            { path: "/adminHome/users", label: "Users" },
+            { path: "/adminHome/allOrders", label: "Orders" },
+            { path: "/adminHome/notifications", label: "Notifications" },
+          ].map((item) => (
+            <li key={item.path}>
+              <NavLink
+                to={item.path}
+                className={({ isActive }) =>
+                  `flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-150 ${
+                    isActive
+                      ? "bg-indigo-600 text-white shadow-md"
+                      : "text-gray-700 hover:bg-gray-100 hover:text-indigo-600"
+                  }`
+                }
+              >
+                {item.label}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </aside>
   );
 };
 

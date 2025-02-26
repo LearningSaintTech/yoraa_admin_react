@@ -1,5 +1,5 @@
 import { API_BASE_URL, ACCESS_TOKEN } from './Constant';
-import  request from './apiConnecter';
+import request from './apiConnecter';
 
 export function getCurrentUser() {
     console.log("inside the getCurrentUser");
@@ -21,6 +21,7 @@ export function login(loginRequest) {
         body: JSON.stringify(loginRequest)
     });
 }
+
 export function signup(signupRequest) {
     return request({
         url: API_BASE_URL + "/auth/signup",
@@ -28,93 +29,389 @@ export function signup(signupRequest) {
         body: JSON.stringify(signupRequest)
     });
 }
-// export function getUserProfile() {
-//     return request({
-//         url: API_BASE_URL + "/api/user-profile/24",
-//         method: 'GET',
-//     });
-// }
-// export const verifyOtp = async (email, otp) => {
-//     console.log("email,otp",email);
-//     console.log("email,otp",otp);
+
+export const loadRazorpayScript = () => {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => reject(false);
+      document.body.appendChild(script);
+    });
+};
+
+// 🟢 CATEGORY API FUNCTIONS
+export function getAllCategories() {
+    console.log("inside getAllCategories");
+    return request({
+      url: API_BASE_URL + "/api/categories",
+      method: "GET",
+    });
+}
+
+export function getCategoryById(categoryId) {
+    return request({
+      url: API_BASE_URL + `/api/categories/${categoryId}`,
+      method: "GET",
+    });
+}
+
+export async function createCategory(categoryData) {
+    const formData = new FormData();
+    console.log("categoryData.name", categoryData);
+    formData.append("name", categoryData.name);
+    formData.append("description", categoryData.description);
+    
+    if (categoryData.image) {
+        formData.append("image", categoryData.image);
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/categories`, {
+            method: "POST",
+            body: formData,
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+            },
+        });
+
+        const result = await response.json();
+        if (!response.ok) {
+            throw result;
+        }
+
+        return result;
+    } catch (error) {
+        console.error("Error creating category:", error);
+        return error;
+    }
+}
+
+export function updateCategory(categoryId, categoryData) {
+    const formData = new FormData();
+    formData.append("name", categoryData.name);
+    formData.append("description", categoryData.description);
+    if (categoryData.image) formData.append("image", categoryData.image);
+  
+    return request({
+      url: API_BASE_URL + `/api/categories/${categoryId}`,
+      method: "PUT",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+      },
+    });
+}
+
+export function deleteCategory(categoryId) {
+    return request({
+      url: API_BASE_URL + `/api/categories/${categoryId}`,
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+      },
+    });
+}
+
+// 🟢 SUBCATEGORY API FUNCTIONS
+export function getAllSubCategories() {
+    console.log("Fetching all subcategories...");
+    return request({
+        url: API_BASE_URL + "/api/subcategories",
+        method: "GET",
+    });
+}
+
+export function getSubCategoryById(subCategoryId) {
+    return request({
+        url: API_BASE_URL + `/api/subcategories/${subCategoryId}`,
+        method: "GET",
+    });
+}
+
+export async function createSubCategory(subCategoryData) {
+    const formData = new FormData();
+    formData.append("name", subCategoryData.name);
+    formData.append("description", subCategoryData.description);
+    formData.append("categoryId", subCategoryData.categoryId);
+    
+    if (subCategoryData.image) {
+        formData.append("image", subCategoryData.image);
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/subcategories`, {
+            method: "POST",
+            body: formData,
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+            },
+        });
+
+        const result = await response.json();
+        if (!response.ok) {
+            throw result;
+        }
+
+        return result;
+    } catch (error) {
+        console.error("Error creating subcategory:", error);
+        return error;
+    }
+}
+
+export function updateSubCategory(subCategoryId, subCategoryData) {
+    const formData = new FormData();
+    formData.append("name", subCategoryData.name);
+    formData.append("description", subCategoryData.description);
+    formData.append("categoryId", subCategoryData.categoryId);
+    
+    if (subCategoryData.image) {
+        formData.append("image", subCategoryData.image);
+    }
+
+    return request({
+        url: API_BASE_URL + `/api/subcategories/${subCategoryId}`,
+        method: "PUT",
+        body: formData,
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+        },
+    });
+}
+
+export function deleteSubCategory(subCategoryId) {
+    return request({
+        url: API_BASE_URL + `/api/subcategories/${subCategoryId}`,
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+        },
+    });
+}
 
 
-//     const response = await fetch(`${API_BASE_URL}/auth/verify-otp?email=${email}&otp=${otp}`, {
-//         method: 'GET',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//     });
+// 🟢 ITEM API FUNCTIONS
+export function getAllItems() {
+    return request({
+        url: API_BASE_URL + "/api/items",
+        method: "GET",
+    });
+}
 
-//     if (!response.ok) {
-//         throw new Error('Failed to verify OTP');
-//     }
+export function getItemById(itemId) {
+    return request({
+        url: API_BASE_URL + `/api/items/${itemId}`,
+        method: "GET",
+    });
+}
 
-//     return response.json();
-// };
-// export function getPrivateMessage() {
-//     console.log("getPrivateMessage");
-//     return request({
-//         url: API_BASE_URL + "/prii",
-//         method: 'GET'
-//     });
-// }
+export async function createItem(itemData) {
+    console.log("itemdata",itemData)
+    const itemData1 = {
+            name: itemData.name,
+            description: itemData.description,
+            price: itemData.price,
+            stock: itemData.stock,
+            brand: itemData.brand,
+            style: itemData.style.split(","),  // Convert comma-separated input into an array
+            occasion: itemData.occasion.split(","),
+            fit: itemData.fit.split(","),
+            material: itemData.material.split(","),
+            discountPrice: itemData.discountPrice,
+            averageRating: itemData.averageRating,
+            totalReviews: itemData.totalReviews
+        };
+        console.log("itemdata1",itemData1)
+
+    const formData = new FormData();
+    
+    formData.append("categoryId", itemData.categoryId);
+    formData.append("subCategoryId", itemData.subCategoryId);
+    formData.append("data", JSON.stringify(itemData1));
+    console.log("fomr data",formData)
+
+    if (itemData.image) {
+        formData.append("image", itemData.image);
+    }
+console.log("formdata in api.js",formData)
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/items`, {
+            method: "POST",
+            body: formData,
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+            },
+        });
+
+        const result = await response.json();
+        if (!response.ok) {
+            throw result;
+        }
+
+        return result;
+    } catch (error) {
+        console.error("Error creating item:", error);
+        return error;
+    }
+}
+
+export function updateItem(itemId, itemData) {
+    const formData = new FormData();
+    formData.append("name", itemData.name);
+    formData.append("description", itemData.description);
+    formData.append("price", itemData.price);
+    formData.append("categoryId", itemData.categoryId);
+    formData.append("subCategoryId", itemData.subCategoryId);
+    
+    if (itemData.image) {
+        formData.append("image", itemData.image);
+    }
+
+    return request({
+        url: API_BASE_URL + `/api/items/${itemId}`,
+        method: "PUT",
+        body: formData,
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+        },
+    });
+}
+
+export function deleteItem(itemId) {
+    return request({
+        url: API_BASE_URL + `/api/items/${itemId}`,
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+        },
+    });
+}
 
 
 
+//Users
+export function getAllUsers() {
+    return request({
+        url: API_BASE_URL + `/api/user/getAlluser`,
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+        },
+    });
+}
 
 
+//notifications
+export async function fetchNotifications() {
+    return request({
+      url: `${API_BASE_URL}/api/notifications`,
+      method: 'GET',
+    });
+  }
+  
+  export async function sendNotificationRequest(notificationData) {
+    return request({
+      url: `${API_BASE_URL}/api/send-notification`,
+      method: 'POST',
+      body: JSON.stringify(notificationData),
+    });
+  }
 
-// export function getAllUsers() {
-//     return request({
-//         url: API_BASE_URL + "/admin/getAllUsers",
-//         method: 'GET'
-//     });
-// }
+  //items details
+  // 🟢 ITEM DETAILS API FUNCTIONS
 
-// export function getAllRoles() {
-//     console.log("getAllRoles");
-//     return request({
-//         url: API_BASE_URL + "/admin/getAllRoles",
-//         method: 'GET'
-//     });
-// }
+// Get all item details
+export function getAllItemDetails() {
+    return request({
+        url: API_BASE_URL + "/api/itemDetails",
+        method: "GET",
+    });
+}
 
-// export function updateUserRoleAndStatus(userId, newRoles, newStatus) {
-//     const body = {};
-//     if (newRoles !== null) body.roles = newRoles;
-//     if (newStatus !== null) body.status = newStatus;
-// console.log("body inside updateUserRoleAndStatus",body);
-//     const headers = new Headers({
-//         'Content-Type': 'application/json',
-//     });
+// Get item details by item ID
+export function getItemDetailsByItemId(itemId) {
+    return request({
+        url: API_BASE_URL + `/api/itemDetails/${itemId}`,
+        method: "GET",
+    });
+}
 
-//     if(localStorage.getItem(ACCESS_TOKEN)) {
-//         headers.append('Authorization', 'Bearer ' + localStorage.getItem(ACCESS_TOKEN));
-//     }
+// Create item details
+export async function createItemDetails(itemId, formData) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/itemDetails/${itemId}`, {
+        method: "POST",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+        },
+      });
+  
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to create item details");
+      }
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
 
-//     return fetch(`${API_BASE_URL}/admin/users/${userId}`, {
-//         method: 'PUT',
-//         headers: headers,
-//         body: JSON.stringify(body)
-//     }).then(response => {
-//         const contentType = response.headers.get("content-type");
-//         if (contentType && contentType.indexOf("application/json") !== -1) {
-//             return response.json().then(json => {
-//                 if (!response.ok) {
-//                     return Promise.reject(json);
-//                 }
-//                 return json;
-//             });
-//         } else {
-//             return response.text().then(text => {
-//                 if (!response.ok) {
-//                     return Promise.reject(text);
-//                 }
-//                 return text;
-//             });
-//         }
-//     });
-// }
+// Update item details
+// ✅ UPDATE ItemDetails (Supports File Uploads)
+export async function updateItemDetails(itemDetailsId, itemDetailsData, formData1) {
+    console.log("itemDetailsId", itemDetailsId);
+    console.log("itemDetailsData", itemDetailsData);
+    console.log("formData1", formData1);
 
+    const formData =  new FormData();
 
+    // ✅ Correctly stringify the JSON data
+    formData.append("data", JSON.stringify(itemDetailsData));
+
+    // ✅ Append images if provided
+    if (formData1.images && formData1.images.length > 0) {
+        formData1.images.forEach((image) => {
+            formData.append("images", image);
+            console.log("image",image)
+        });
+    }
+
+    return fetch(`${API_BASE_URL}/api/itemDetails/${itemDetailsId}`, {
+        method: "PUT",
+        body: formData,
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+        },
+    })
+    .then(response => response.json())
+    .then(response => {
+        if (!response) throw response;
+        return response;
+    })
+    .catch(error => {
+        console.error("Error updating item details:", error);
+        return error;
+    });
+}
+
+// ✅ DELETE ItemDetails
+export async function deleteItemDetails(itemDetailsId) {
+    console.log("itemDetailsId",itemDetailsId)
+    return fetch(`${API_BASE_URL}/api/itemDetails/${itemDetailsId}`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+        },
+    })
+    .then(response => response.json())
+    .then(response => {
+        if (response.success) throw response;
+        return response;
+    })
+    .catch(error => {
+        console.error("Error deleting item details:", error);
+        return error;
+    });
+}
