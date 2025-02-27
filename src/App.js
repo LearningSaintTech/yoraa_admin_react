@@ -15,6 +15,7 @@ import Items from './Components/adminComponent/items/Items.jsx';
 import Users from './Components/adminComponent/userComponents/Users.jsx';
 import Notifications from './Components/adminComponent/notifications/Notifications.jsx';
 import ItemDetails from './Components/adminComponent/itemsDetails/ItemDetails.jsx';
+import Order from './Components/adminComponent/order/Order.js';
 
 
 const App = () => {
@@ -44,6 +45,7 @@ const App = () => {
           <Route path="users" element={<ProtectedRoute allowedRoles={['ADMIN']}>< Users/></ProtectedRoute>} />
           <Route path="notifications" element={<ProtectedRoute allowedRoles={['ADMIN']}>< Notifications/></ProtectedRoute>} />
           <Route path="itemDetails" element={<ProtectedRoute allowedRoles={['ADMIN']}>< ItemDetails/></ProtectedRoute>} />
+          <Route path="order" element={<ProtectedRoute allowedRoles={['ADMIN']}>< Order/></ProtectedRoute>} />
 
 
           {/* <Route path="/adminHome" element={<AdminHome />}>

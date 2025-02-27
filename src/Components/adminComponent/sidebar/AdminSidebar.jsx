@@ -20,7 +20,7 @@ ADMIN PANNEL        </h1>
             { path: "/adminHome/items", label: "Items" },
             { path: "/adminHome/itemDetails", label: "Item Details" },
             { path: "/adminHome/users", label: "Users" },
-            { path: "/adminHome/allOrders", label: "Orders" },
+            { path: "/adminHome/order", label: "Orders" },
             { path: "/adminHome/notifications", label: "Notifications" },
           ].map((item) => (
             <li key={item.path}>

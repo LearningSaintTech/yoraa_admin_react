@@ -418,3 +418,39 @@ export async function deleteItemDetails(itemDetailsId) {
         return error;
     });
 }
+
+
+//dashboard
+export function getTotalUsersCount() {
+    return request({
+        url: API_BASE_URL + `/api/auth/totalUsersCount`,
+        method: "GET",
+    });
+}
+export function getTotalCategoryCount() {
+    return request({
+        url: API_BASE_URL + `/api/categories/totalCountCategories`,
+        method: "GET",
+    });
+}
+export function getTotalSubCategoryCount() {
+    return request({
+        url: API_BASE_URL + `/api/subcategories/totalSubcategories`,
+        method: "GET",
+    });
+}
+export function getTotalItemCount() {
+    return request({
+        url: API_BASE_URL + `/api/items/totalItemCount`,
+        method: "GET",
+    });
+}
+
+
+//order
+export function getAllOrder() {
+    return request({
+        url: API_BASE_URL + `/api/orders/getAllOrder`,
+        method: "GET",
+    });
+}
