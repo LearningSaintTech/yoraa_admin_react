@@ -1,11 +1,13 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../sidebar/AdminSidebar";
+import Header from "../Header";
 
 const AdminHome = () => {
   return (
     <div className="flex">
       {/* Sidebar */}
+      <Header/>
       <aside className="w-64 h-screen bg-gray-800 text-white fixed top-16 left-0">
         <Sidebar />
       </aside>

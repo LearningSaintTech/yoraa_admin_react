@@ -30,11 +30,15 @@ const ItemsDetails = () => {
     fitDetails: "",
     careInstructions: "",
     size: { modelHeight: "", modelMeasurements: "", modelWearingSize: "" },
+    sizes: [], // New field for sizes and stock
     manufacturerDetails: { name: "", address: "", countryOfOrigin: "", contactDetails: { phone: "", email: "" } },
     shippingAndReturns: { shippingDetails: "", returnPolicy: "" },
     images: [],
     existingImages: [],
     deletedImages: [],
+    sizeChartInch: null, // New field for size chart in inches
+    sizeChartCm: null,   // New field for size chart in centimeters
+    sizeMeasurement: null, // New field for size measurement image
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -58,7 +62,7 @@ const ItemsDetails = () => {
       }
     };
     fetchData();
-  }, [formData.existingImages,formData.deletedImages]);
+  }, [formData.existingImages, formData.deletedImages]);
 
   useEffect(() => {
     console.log("Filtering useEffect triggered with dependencies:", { searchTerm, category, subcategory, items, existingImages: formData.existingImages });
@@ -68,7 +72,7 @@ const ItemsDetails = () => {
       (!subcategory || item.subCategoryId === subcategory)
     ));
     console.log("Filtered items:", filteredItems);
-  }, [searchTerm, category, subcategory, items,formData.existingImages,formData.deletedImages]);
+  }, [searchTerm, category, subcategory, items, formData.existingImages, formData.deletedImages]);
 
   console.log("createModalOpen", createModalOpen);
 
@@ -79,11 +83,15 @@ const ItemsDetails = () => {
       fitDetails: "",
       careInstructions: "",
       size: { modelHeight: "", modelMeasurements: "", modelWearingSize: "" },
+      sizes: [],
       manufacturerDetails: { name: "", address: "", countryOfOrigin: "", contactDetails: { phone: "", email: "" } },
       shippingAndReturns: { shippingDetails: "", returnPolicy: "" },
       images: [],
       existingImages: [],
       deletedImages: [],
+      sizeChartInch: null,
+      sizeChartCm: null,
+      sizeMeasurement: null,
     };
   };
 
@@ -133,6 +141,7 @@ const ItemsDetails = () => {
               modelMeasurements: response.size?.modelMeasurements || "",
               modelWearingSize: response.size?.modelWearingSize || "",
             },
+            sizes: response.sizes || [], // Populate sizes
             manufacturerDetails: {
               name: response.manufacturerDetails?.name || "",
               address: response.manufacturerDetails?.address || "",
@@ -147,6 +156,9 @@ const ItemsDetails = () => {
               returnPolicy: response.shippingAndReturns?.returnPolicy?.join("\n") || "",
             },
             existingImages: response.images || [],
+            sizeChartInch: response.sizeChartInch || null, // Populate size chart images
+            sizeChartCm: response.sizeChartCm || null,
+            sizeMeasurement: response.sizeMeasurement || null,
           });
           setSelectedItemId(value._id);
           setIsUpdate(true);
@@ -187,25 +199,45 @@ const ItemsDetails = () => {
     console.log("Updated formData:", formData);
   };
 
-  const handleFileChange = (e) => {
-    const files = Array.from(e.target.files).slice(0, 5 - formData.existingImages.length);
-    console.log("handleFileChange - selected files:", files);
-    setFormData({ ...formData, images: files });
-    setError(files.length > (5 - formData.existingImages.length) ? "Total images cannot exceed 5." : null);
-    console.log("Updated formData.images:", formData.images);
+  const handleSizeChange = (index, field, value) => {
+    const updatedSizes = [...formData.sizes];
+    updatedSizes[index] = { ...updatedSizes[index], [field]: value };
+    setFormData({ ...formData, sizes: updatedSizes });
+  };
+
+  const addSizeField = () => {
+    setFormData({ ...formData, sizes: [...formData.sizes, { size: "", stock: "" }] });
+  };
+
+  const removeSizeField = (index) => {
+    setFormData({ ...formData, sizes: formData.sizes.filter((_, i) => i !== index) });
+  };
+
+  const handleFileChange = (e, field) => {
+    const files = Array.from(e.target.files);
+    if (field === "images") {
+      const newImages = files.slice(0, 5 - formData.existingImages.length);
+      console.log("handleFileChange - selected files for images:", newImages);
+      setFormData({ ...formData, images: newImages });
+      setError(newImages.length > (5 - formData.existingImages.length) ? "Total images cannot exceed 5." : null);
+    } else {
+      console.log(`handleFileChange - selected file for ${field}:`, files[0]);
+      setFormData({ ...formData, [field]: files[0] || null });
+    }
+    console.log("Updated formData:", formData);
   };
 
   const handleDeleteImage = async (url) => {
     console.log("handleDeleteImage called with URL:", url);
     setFormData((prev) => {
-      console.log("qqqqqqqqqqqqq")
+      console.log("qqqqqqqqqqqqq");
       const updatedExistingImages = prev.existingImages.filter((img) => img !== url);
       const updatedDeletedImages = [...prev.deletedImages, url];
-  
+
       console.log("Deleted Image URL:", url);
       console.log("Updated Existing Images:", updatedExistingImages);
       console.log("Updated Deleted Images:", updatedDeletedImages);
-  
+
       return {
         ...prev,
         existingImages: updatedExistingImages,
@@ -213,7 +245,7 @@ const ItemsDetails = () => {
       };
     });
     console.log("formData after setFormData:", formData);
-  
+
     try {
       console.log("Deleting image from backend:", url);
       const response = await fetch(
@@ -226,9 +258,9 @@ const ItemsDetails = () => {
           body: JSON.stringify({ imageUrl: url }),
         }
       );
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
         console.log("Image deleted successfully from backend:", data);
       } else {
@@ -252,6 +284,7 @@ const ItemsDetails = () => {
         fitDetails: formData.fitDetails ? formData.fitDetails.split(",").map((item) => item.trim()) : [],
         careInstructions: formData.careInstructions,
         size: formData.size,
+        sizes: formData.sizes, // Include sizes
         manufacturerDetails: formData.manufacturerDetails,
         shippingAndReturns: {
           shippingDetails: formData.shippingAndReturns.shippingDetails
@@ -269,11 +302,14 @@ const ItemsDetails = () => {
       if (formData.images.length > 0) {
         formData.images.forEach((image) => formDataToSend.append("images", image));
       }
+      if (formData.sizeChartInch) formDataToSend.append("sizeChartInch", formData.sizeChartInch);
+      if (formData.sizeChartCm) formDataToSend.append("sizeChartCm", formData.sizeChartCm);
+      if (formData.sizeMeasurement) formDataToSend.append("sizeMeasurement", formData.sizeMeasurement);
       if (isUpdateMode) formDataToSend.append("deletedImages", JSON.stringify(formData.deletedImages));
 
       console.log("selectedItemDetails", selectedItemDetails);
       const apiCall = isUpdateMode
-        ? updateItemDetails(selectedItemDetails.items._id, itemDetailsData, { images: formData.images })
+        ? updateItemDetails(selectedItemDetails.items._id, formDataToSend)
         : createItemDetails(selectedItemId, formDataToSend);
 
       await apiCall;
@@ -407,6 +443,34 @@ const ItemsDetails = () => {
                     </div>
                   ))}
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Sizes and Stock</label>
+                  {formData.sizes.map((size, index) => (
+                    <div key={index} className="flex gap-4 mb-2">
+                      <input
+                        type="text"
+                        value={size.size}
+                        onChange={(e) => handleSizeChange(index, "size", e.target.value)}
+                        placeholder="Size (e.g., M)"
+                        className={inputClass}
+                      />
+                      <input
+                        type="number"
+                        value={size.stock}
+                        onChange={(e) => handleSizeChange(index, "stock", e.target.value)}
+                        placeholder="Stock"
+                        min="0"
+                        className={inputClass}
+                      />
+                      <button type="button" onClick={() => removeSizeField(index)} className="text-red-600 hover:text-red-800">
+                        <FaTrash className="h-5 w-5" />
+                      </button>
+                    </div>
+                  ))}
+                  <button type="button" onClick={addSizeField} className={`${buttonClass} bg-green-600 hover:bg-green-700 focus:ring-green-500 mt-2`}>
+                    <FaPlus className="mr-2 h-4 w-4" /> Add Size
+                  </button>
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {["name", "countryOfOrigin"].map((field) => (
                     <div key={field}>
@@ -439,7 +503,7 @@ const ItemsDetails = () => {
                     <div className="mb-2 flex flex-wrap gap-2">
                       {formData.existingImages.map((url, index) => (
                         <div key={index} className="relative">
-                          <img src={url} alt={`Existing ${index + 1}`} className="h-16 w-16 rounded-lg object-cover cursor-pointer hover:scale-105 transition-transform"  />
+                          <img src={url} alt={`Existing ${index + 1}`} className="h-16 w-16 rounded-lg object-cover cursor-pointer hover:scale-105 transition-transform" />
                           <button onClick={() => handleDeleteImage(url)} className="absolute top-0 right-0 p-1 bg-red-600 text-white rounded-full hover:bg-red-700">
                             <FaTrash className="h-3 w-3" />
                           </button>
@@ -449,9 +513,54 @@ const ItemsDetails = () => {
                   )}
                   <label htmlFor="item-details-images" className="mt-1 flex w-full cursor-pointer items-center justify-center rounded-md border-2 border-dashed border-gray-300 px-4 py-6 text-center hover:border-indigo-500">
                     <span className="text-sm text-gray-500">{formData.images.length > 0 ? `${formData.images.length} new image(s) selected` : "Click to upload new images"}</span>
-                    <input id="item-details-images" type="file" multiple onChange={handleFileChange} className="hidden" accept="image/*" />
+                    <input id="item-details-images" type="file" multiple onChange={(e) => handleFileChange(e, "images")} className="hidden" accept="image/*" />
                   </label>
                   {formData.images.length + formData.existingImages.length > 5 && <p className="text-red-600 text-sm mt-2">Total images cannot exceed 5.</p>}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Size Chart (Inches)</label>
+                  {isUpdate && formData.sizeChartInch && (
+                    <div className="mb-2">
+                      <img src={formData.sizeChartInch} alt="Size Chart Inch" className="h-16 w-16 rounded-lg object-cover inline-block mr-2" />
+                      <button onClick={() => setFormData({ ...formData, sizeChartInch: null })} className="text-red-600 hover:text-red-800">
+                        <FaTrash className="h-5 w-5 inline" />
+                      </button>
+                    </div>
+                  )}
+                  <label htmlFor="size-chart-inch" className="mt-1 flex w-full cursor-pointer items-center justify-center rounded-md border-2 border-dashed border-gray-300 px-4 py-6 text-center hover:border-indigo-500">
+                    <span className="text-sm text-gray-500">{formData.sizeChartInch ? "New size chart (inches) selected" : "Click to upload size chart (inches)"}</span>
+                    <input id="size-chart-inch" type="file" onChange={(e) => handleFileChange(e, "sizeChartInch")} className="hidden" accept="image/*" />
+                  </label>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Size Chart (Centimeters)</label>
+                  {isUpdate && formData.sizeChartCm && (
+                    <div className="mb-2">
+                      <img src={formData.sizeChartCm} alt="Size Chart Cm" className="h-16 w-16 rounded-lg object-cover inline-block mr-2" />
+                      <button onClick={() => setFormData({ ...formData, sizeChartCm: null })} className="text-red-600 hover:text-red-800">
+                        <FaTrash className="h-5 w-5 inline" />
+                      </button>
+                    </div>
+                  )}
+                  <label htmlFor="size-chart-cm" className="mt-1 flex w-full cursor-pointer items-center justify-center rounded-md border-2 border-dashed border-gray-300 px-4 py-6 text-center hover:border-indigo-500">
+                    <span className="text-sm text-gray-500">{formData.sizeChartCm ? "New size chart (cm) selected" : "Click to upload size chart (cm)"}</span>
+                    <input id="size-chart-cm" type="file" onChange={(e) => handleFileChange(e, "sizeChartCm")} className="hidden" accept="image/*" />
+                  </label>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Size Measurement Image</label>
+                  {isUpdate && formData.sizeMeasurement && (
+                    <div className="mb-2">
+                      <img src={formData.sizeMeasurement} alt="Size Measurement" className="h-16 w-16 rounded-lg object-cover inline-block mr-2" />
+                      <button onClick={() => setFormData({ ...formData, sizeMeasurement: null })} className="text-red-600 hover:text-red-800">
+                        <FaTrash className="h-5 w-5 inline" />
+                      </button>
+                    </div>
+                  )}
+                  <label htmlFor="size-measurement" className="mt-1 flex w-full cursor-pointer items-center justify-center rounded-md border-2 border-dashed border-gray-300 px-4 py-6 text-center hover:border-indigo-500">
+                    <span className="text-sm text-gray-500">{formData.sizeMeasurement ? "New size measurement selected" : "Click to upload size measurement"}</span>
+                    <input id="size-measurement" type="file" onChange={(e) => handleFileChange(e, "sizeMeasurement")} className="hidden" accept="image/*" />
+                  </label>
                 </div>
                 <button type="submit" disabled={loading || formData.images.length + formData.existingImages.length > 5} className={`${buttonClass} w-full bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 disabled:bg-indigo-400`}>
                   {loading ? "Processing..." : isUpdate ? "Update Item Details" : "Create Item Details"}
@@ -478,6 +587,7 @@ const ItemsDetails = () => {
                     "Model Height": selectedItemDetails.size?.modelHeight,
                     "Model Measurements": selectedItemDetails.size?.modelMeasurements,
                     "Model Wearing Size": selectedItemDetails.size?.modelWearingSize,
+                    "Sizes": selectedItemDetails.sizes?.map(s => `${s.size}: ${s.stock}`).join(", "),
                     "Manufacturer Name": selectedItemDetails.manufacturerDetails?.name,
                     "Manufacturer Address": selectedItemDetails.manufacturerDetails?.address,
                     "Country of Origin": selectedItemDetails.manufacturerDetails?.countryOfOrigin,
@@ -497,6 +607,30 @@ const ItemsDetails = () => {
                       {selectedItemDetails.images?.length ? selectedItemDetails.images.map((url, i) => (
                         <img key={i} src={url} alt={`Image ${i + 1}`} className="h-16 w-16 rounded-lg object-cover inline-block mr-2 mb-2 cursor-pointer hover:scale-105 transition-transform" onClick={() => handleClick("image", url)} />
                       )) : <p className="text-sm text-gray-900">N/A</p>}
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <p className="text-sm font-medium text-gray-600 min-w-[150px]">Size Chart (Inches):</p>
+                    <div className="flex-1">
+                      {selectedItemDetails.sizeChartInch ? (
+                        <img src={selectedItemDetails.sizeChartInch} alt="Size Chart Inch" className="h-16 w-16 rounded-lg object-cover inline-block mr-2 mb-2 cursor-pointer hover:scale-105 transition-transform" onClick={() => handleClick("image", selectedItemDetails.sizeChartInch)} />
+                      ) : <p className="text-sm text-gray-900">N/A</p>}
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <p className="text-sm font-medium text-gray-600 min-w-[150px]">Size Chart (Centimeters):</p>
+                    <div className="flex-1">
+                      {selectedItemDetails.sizeChartCm ? (
+                        <img src={selectedItemDetails.sizeChartCm} alt="Size Chart Cm" className="h-16 w-16 rounded-lg object-cover inline-block mr-2 mb-2 cursor-pointer hover:scale-105 transition-transform" onClick={() => handleClick("image", selectedItemDetails.sizeChartCm)} />
+                      ) : <p className="text-sm text-gray-900">N/A</p>}
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <p className="text-sm font-medium text-gray-600 min-w-[150px]">Size Measurement:</p>
+                    <div className="flex-1">
+                      {selectedItemDetails.sizeMeasurement ? (
+                        <img src={selectedItemDetails.sizeMeasurement} alt="Size Measurement" className="h-16 w-16 rounded-lg object-cover inline-block mr-2 mb-2 cursor-pointer hover:scale-105 transition-transform" onClick={() => handleClick("image", selectedItemDetails.sizeMeasurement)} />
+                      ) : <p className="text-sm text-gray-900">N/A</p>}
                     </div>
                   </div>
                   <button onClick={() => handleDeleteClick(selectedItemDetails._id)} className={`${buttonClass} bg-red-600 hover:bg-red-700 focus:ring-red-500 mt-4`} disabled={loading}>

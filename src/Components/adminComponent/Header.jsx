@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { useLogout } from "../../Components/authComponent/Logout";
+import { useLogout } from "../authComponent/Logout";
 
 const Header = () => {
   const user = useSelector((state) => state.auth.user);

@@ -1,6 +1,8 @@
 import { API_BASE_URL, ACCESS_TOKEN } from './Constant';
 import request from './apiConnecter';
 
+
+//Auth
 export function getCurrentUser() {
     console.log("inside the getCurrentUser");
 
@@ -23,12 +25,21 @@ export function login(loginRequest) {
 }
 
 export function signup(signupRequest) {
+    console.log("signup",signupRequest)
     return request({
-        url: API_BASE_URL + "/auth/signup",
+        url: API_BASE_URL + "/api/auth/signup",
         method: 'POST',
         body: JSON.stringify(signupRequest)
     });
 }
+export function verifyOtp(otpRequest) {
+    return request({
+      url: API_BASE_URL + "/verify-otp",
+      method: "POST",
+      body: JSON.stringify(otpRequest),
+    });
+  }
+
 
 export const loadRazorpayScript = () => {
     return new Promise((resolve, reject) => {
@@ -363,24 +374,11 @@ export async function createItemDetails(itemId, formData) {
 
 // Update item details
 // ✅ UPDATE ItemDetails (Supports File Uploads)
-export async function updateItemDetails(itemDetailsId, itemDetailsData, formData1) {
+export async function updateItemDetails(itemDetailsId, formData) {
     console.log("itemDetailsId", itemDetailsId);
-    console.log("itemDetailsData", itemDetailsData);
-    console.log("formData1", formData1);
+    console.log("formData", formData);
 
-    const formData =  new FormData();
-
-    // ✅ Correctly stringify the JSON data
-    formData.append("data", JSON.stringify(itemDetailsData));
-
-    // ✅ Append images if provided
-    if (formData1.images && formData1.images.length > 0) {
-        formData1.images.forEach((image) => {
-            formData.append("images", image);
-            console.log("image",image)
-        });
-    }
-
+    // The formData is already constructed in ItemDetails.jsx, so we use it directly
     return fetch(`${API_BASE_URL}/api/itemDetails/${itemDetailsId}`, {
         method: "PUT",
         body: formData,
@@ -388,17 +386,23 @@ export async function updateItemDetails(itemDetailsId, itemDetailsData, formData
             Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
         },
     })
-    .then(response => response.json())
     .then(response => {
-        if (!response) throw response;
+        if (!response.ok) {
+            return response.json().then(errorData => {
+                throw new Error(errorData.error || "Failed to update item details");
+            });
+        }
+        return response.json();
+    })
+    .then(response => {
+        console.log("Update successful:", response);
         return response;
     })
     .catch(error => {
         console.error("Error updating item details:", error);
-        return error;
+        throw error; // Re-throw the error to be handled by the caller
     });
 }
-
 // ✅ DELETE ItemDetails
 export async function deleteItemDetails(itemDetailsId) {
     console.log("itemDetailsId",itemDetailsId)
