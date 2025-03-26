@@ -10,7 +10,7 @@ const Footer = () => {
 
   return (
     <>
-      <div className=" mt-[50px] sm:hidden block">
+      <div className=" bg-[#f5f5f5] sm:hidden block">
         <div className=" flex flex-col my-8 mx-4 bg-black rounded-xl">
           <div className=" flex flex-col text-white font-light px-3 py-2  gap-4">
             <div
@@ -177,7 +177,7 @@ const Footer = () => {
       </div>
 
       {/* "Large Screen Footer" */}
-      <div className=" hidden sm:block">
+      <div className=" hidden bg-[#f5f5f5] sm:block">
         <div className=" grid sm:grid-cols-3  mx-7 my-8 bg-black  rounded-l-2xl rounded-r-2xl">
           <div className=" min-h-64  col-span-1 rounded-l-2xl">
             <div className=" flex flex-col text-white font-light ml-6 mt-8 gap-4">

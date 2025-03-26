@@ -13,7 +13,7 @@ const AdminHome = () => {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 ml-64 pt-20 p-6 bg-gray-100 min-h-screen">
+      <main className="flex-1 ml-64 pt-20 p-6 bg-[#f5f5f5] min-h-screen">
         <Outlet />
       </main>
     </div>

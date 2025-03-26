@@ -16,14 +16,14 @@ const LoginForm = () => {
   const onSubmit = async (data) => {
     try {
       const response = await login(data);
-      console.log("response",response)
-      localStorage.setItem(ACCESS_TOKEN, response.data.token);
-      dispatch(setToken(response.accessToken));
+    localStorage.setItem(ACCESS_TOKEN, response.data.token);
+    dispatch(setToken(response.data.token)); // Fix: Use response.data.token
+    console.log("Stored Token:", localStorage.getItem("ACCESS_TOKEN"));
 
-      const userData = await getCurrentUser(response.accessToken);
-      localStorage.setItem(USER_DATA, JSON.stringify(userData));
-      dispatch(setUser(userData));
-
+    // Fetch user data using the correct token
+    const userData = await getCurrentUser(response.data.token);
+    localStorage.setItem(USER_DATA, JSON.stringify(userData));
+    dispatch(setUser(userData));
       if(userData.isAdmin)
       {
         navigate('/adminHome')

@@ -7,7 +7,6 @@ import { CiShoppingCart } from "react-icons/ci";
 import { GoUpload } from "react-icons/go";
 import { addToWishlist as addToWishlistAction, removeFromWishlist as removeFromWishlistAction } from "../../slice/wishlistSlice"; // Redux actions
 import { addToCart as addToCartAction, removeFromCart as removeFromCartAction } from "../../slice/cartSlice"; // Redux actions
-import { FaHeart, FaEye, FaShoppingCart } from "react-icons/fa";
 
 const MainContent = () => {
   const [categories, setCategories] = useState([]);
@@ -202,7 +201,7 @@ const MainContent = () => {
                   className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-all duration-300"
                   onClick={() => handleWishlistClick(item._id)}
                 >
-                  <RiHeartFill className={`text-lg ${isInWishlist ? "text-red" : "text-gray-500"}`} />
+                  <RiHeartFill className={`text-lg ${isInWishlist ? "text-black" : "text-gray-700"}`} />
                 </button>
                 <button className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-all duration-300">
                   <BsFillEyeFill className="text-gray-700 text-lg" />
@@ -211,7 +210,7 @@ const MainContent = () => {
                   className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-all duration-300"
                   onClick={() => handleCartClick(item._id)}
                 >
-                  <FaShoppingCart className={`text-lg ${isInCart ? "text-red" : "text-gray-500"}`} />
+                  <CiShoppingCart className={`text-lg ${isInCart ? "text-black" : "text-gray-700"}`} />
                 </button>
               </div>
             </div>

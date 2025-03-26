@@ -21,6 +21,16 @@ import Layout from './Components/userComponent/Layout.jsx';
 import Collections from './Components/userComponent/collections/Page.jsx';
 import ProductDetails from './Components/userComponent/productDetails/ProductDetails.jsx';
 import QuickViewModal from './Components/userComponent/productDetails/QuickViewModal.jsx';
+import NewArrivals from './Components/userComponent/newArrivals/Page.jsx';
+import Wishlist from './Components/userComponent/Wishlist/Page.jsx';
+import Cart from './Components/userComponent/cart/Cart.jsx';
+import FilterPage from './Components/userComponent/FilterPage.jsx';
+import PaymentPage from './Components/userComponent/PaymentPage.jsx';
+import AllOrders from './Components/userComponent/orders/AllOrders.jsx';
+import TrackOrders from './Components/userComponent/orders/TrackOrders.jsx';
+import ReturnRefund from './Components/userComponent/orders/ReturnRefund.jsx';
+import Exchange from './Components/userComponent/orders/Exchange.jsx';
+import ExchangePolicy from './Components/userComponent/orders/ExchangePolicy.jsx';
 
 const App = () => {
   return (
@@ -49,8 +59,22 @@ const App = () => {
         {/* User Route */}
         <Route path="/home" element={<Layout><Home /></Layout>} />
         <Route path="/collections" element={<Layout><Collections /></Layout>} />
-        <Route path="/productDetails/:itemId" element={<ProductDetails />} />
-        <Route path="/quickViewModal/:itemId" element={<QuickViewModal />} />
+        <Route path="/productDetails/:itemId" element={<Layout><ProductDetails /></Layout>} />
+        <Route path="/quickViewModal/:itemId" element={<Layout><QuickViewModal /></Layout>} />
+        <Route path="/newArrivals" element={<Layout><NewArrivals /> </Layout>}/>
+        <Route path="/wishlist" element={<Layout><Wishlist /> </Layout>}/>
+        <Route path="/cart" element={<Layout><Cart /> </Layout>}/>
+        <Route path="/filter" element={<Layout><FilterPage /> </Layout>}/>
+        <Route path="/payment" element={<Layout><PaymentPage /> </Layout>}/>
+        <Route path="/allOrders" element={<Layout><AllOrders /> </Layout>}/>
+        <Route path="/tracking" element={<Layout><TrackOrders /> </Layout>}/>
+        <Route path="/return-refund" element={<Layout><ReturnRefund /> </Layout>}/>
+        <Route path="/exchange" element={<Layout><Exchange /> </Layout>}/>
+        <Route path="/exchange-policy" element={<Layout><ExchangePolicy /> </Layout>}/>
+
+
+
+
 
 
      </Routes>

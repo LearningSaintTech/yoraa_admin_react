@@ -320,16 +320,56 @@ export function getAllUsers() {
 export async function fetchNotifications() {
     return request({
       url: `${API_BASE_URL}/api/notifications`,
-      method: 'GET',
+      method: "GET",
     });
   }
   
+  export async function uploadNotificationImage(imageFile) {
+    const formData = new FormData();
+    formData.append("image", imageFile);
+  
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/upload-notification-image`, {
+        method: "POST",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+        },
+      });
+  
+      const result = await response.json();
+      if (!response.ok) {
+        throw result;
+      }
+  
+      return result.imageUrl;
+    } catch (error) {
+      console.error("Error uploading notification image:", error);
+      throw error;
+    }
+  }
+  
   export async function sendNotificationRequest(notificationData) {
-    return request({
-      url: `${API_BASE_URL}/api/send-notification`,
-      method: 'POST',
-      body: JSON.stringify(notificationData),
-    });
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/send-notification`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+        },
+        body: JSON.stringify(notificationData),
+      });
+  
+      const result = await response.json();
+      if (!response.ok) {
+        throw result;
+      }
+  
+      return result;
+    } catch (error) {
+      console.error("Error sending notification:", error);
+      throw error;
+    }
   }
 
   //items details

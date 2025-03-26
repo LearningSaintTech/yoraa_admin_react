@@ -13,7 +13,6 @@ const Category = () => {
     getAllCategories()
       .then((response) => {
         console.log("API Response (Categories):", response.data);
-
         setCategories(response.data);
 
         if (response.data.length > 0) {
@@ -51,18 +50,20 @@ const Category = () => {
   };
 
   return (
-    <div className="h-screen w-full bg-white flex flex-col">
-      {loading && <p className="text-gray-500">Loading...</p>}
-      {error && <p className="text-red-500">{error}</p>}
+    <div className="w-full bg-[#F5F5F5]  flex flex-col">
+      {/* Loading and Error States */}
+      {loading && <p className="text-gray-500 text-center py-4">Loading...</p>}
+      {error && <p className="text-red-500 text-center py-4">{error}</p>}
 
-      <div className="w-full flex justify-center space-x-8 py-6 bg-white sticky top-0  z-10">
+      {/* Category Buttons */}
+      <div className="w-full flex justify-center space-x-6 py-6 bg-[#F5F5F5] sticky top-0 z-10">
         {categories.map((category) => (
           <button
             key={category._id}
-            className={`px-5 py-2 rounded-full text-lg font-medium transition ${
+            className={`px-6 py-2 rounded-full text-lg font-light transition ${
               selectedCategory?._id === category._id
-                ? "bg-black text-white"
-                : "text-black hover:text-gray-500"
+                ? "bg-white text-blacks"
+                : "text-gray-600 hover:text-gray-800"
             }`}
             onClick={() => handleCategoryClick(category)}
           >
@@ -70,27 +71,33 @@ const Category = () => {
           </button>
         ))}
       </div>
-
-      <div className="flex-1 overflow-y-auto scrollbar-hide">
-      <ul className="border-t border-gray-300">
-          {subcategories.map((sub) => (
-            <li
-              key={sub._id}
-              className="flex justify-between items-center py-5 px-10 border-b border-gray-300 cursor-pointer hover:bg-gray-100 transition"
-            >
-              <span className="flex items-center space-x-4 text-lg font-semibold">
-                <img
-                  src={sub.imageUrl || "https://via.placeholder.com/50"}
-                  alt={sub.name}
-                  className="w-12 h-12 object-cover rounded-full"
-                />
-                <span>{sub.name}</span>
-              </span>
-              <span className="text-gray-500">→</span>
-            </li>
-          ))}
-        </ul>
+      <div className="flex-1 overflow-x-auto scrollbar-hide px-4">
+  <div className="flex space-x-4 py-4">
+    {subcategories.map((sub) => (
+      <div
+        key={sub._id}
+        className="flex-none w-64 rounded-xl overflow-hidden cursor-pointer hover:shadow-lg transition"
+      >
+        {/* Image with Full Display */}
+        <div className="relative w-full h-96">
+          <img
+            src={sub.imageUrl || "https://via.placeholder.com/300"}
+            alt={sub.name}
+            className="w-full h-full object-cover rounded-xl"
+          />
+          {/* Overlay Button */}
+          <div className="absolute bottom-4 left-4 right-4">
+            <button className="w-full bg-white  text-black text-lg font-light py-2 rounded-full transition hover:bg-gray-200 shadow-md">
+              {sub.name}
+            </button>
+          </div>
+        </div>
       </div>
+    ))}
+  </div>
+</div>
+
+
     </div>
   );
 };
